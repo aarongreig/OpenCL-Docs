@@ -287,7 +287,7 @@ device except for the following queries:
         {CL_DEVICE_TYPE_CPU}, {CL_DEVICE_TYPE_GPU}, {CL_DEVICE_TYPE_ACCELERATOR},
         {CL_DEVICE_TYPE_DEFAULT}, a combination of the above types, or
         {CL_DEVICE_TYPE_CUSTOM}.
-| {CL_DEVICE_VENDOR_ID_anchor}
+| {CL_DEVICE_VENDOR_ID_anchor}^4^
   | cl_uint
       | A unique device vendor identifier.
         An example of a unique device identifier could be the PCIe ID.
@@ -382,7 +382,7 @@ device except for the following queries:
   | cl_bool
       | Is {CL_TRUE} if images are supported by the OpenCL device and {CL_FALSE}
         otherwise.
-| {CL_DEVICE_MAX_READ_IMAGE_ARGS_anchor}^4^
+| {CL_DEVICE_MAX_READ_IMAGE_ARGS_anchor}^5^
   | cl_uint
       | Max number of image objects arguments of a kernel declared with the
         read_only qualifier.
@@ -392,7 +392,7 @@ device except for the following queries:
       | Max number of image objects arguments of a kernel declared with the
         write_only qualifier.
         The minimum value is 64 if {CL_DEVICE_IMAGE_SUPPORT} is {CL_TRUE}.
-| {CL_DEVICE_MAX_READ_WRITE_IMAGE_ARGS_anchor}^5^
+| {CL_DEVICE_MAX_READ_WRITE_IMAGE_ARGS_anchor}^6^
   | cl_uint
       | Max number of image objects arguments of a kernel declared with the
         write_only or read_write qualifier.
@@ -493,7 +493,7 @@ device except for the following queries:
         built-in data type supported by the device (long16 in FULL profile,
         long16 or int16 in EMBEDDED profile) for devices that are not of
         type {CL_DEVICE_TYPE_CUSTOM}.
-| {CL_DEVICE_SINGLE_FP_CONFIG_anchor}^6^
+| {CL_DEVICE_SINGLE_FP_CONFIG_anchor}^7^
   | cl_device_fp_config
       | Describes single precision floating-point capability of the device.
         This is a bit-field that describes one or more of the following
@@ -526,7 +526,7 @@ device except for the following queries:
         For the embedded profile, see the
         <<embedded-profile-single-fp-config-requirements, dedicated table>>.
 
-| {CL_DEVICE_DOUBLE_FP_CONFIG_anchor}^7^
+| {CL_DEVICE_DOUBLE_FP_CONFIG_anchor}^8^
   | cl_device_fp_config
       | Describes double precision floating-point capability of the OpenCL
         device.
@@ -659,7 +659,7 @@ device except for the following queries:
         kernels.
 
         The mandated minimum capability is: {CL_EXEC_KERNEL}.
-| {CL_DEVICE_QUEUE_ON_HOST_PROPERTIES_anchor}^8^
+| {CL_DEVICE_QUEUE_ON_HOST_PROPERTIES_anchor}^9^
   | cl_command_queue_properties
       | Describes the on host command-queue properties supported by the
         device.
@@ -734,7 +734,7 @@ device except for the following queries:
   | char[]
       | OpenCL software driver version string.
         Follows a vendor-specific format.
-| {CL_DEVICE_PROFILE_anchor}^9^
+| {CL_DEVICE_PROFILE_anchor}^10^
   | char[]
       | OpenCL profile string.
         Returns the profile name supported by the device.
@@ -940,6 +940,21 @@ device except for the following queries:
 |====
 
 4::
+    OpenCL adopters must report a valid vendor ID for their implementation.
+    If there is no valid PCI vendor ID defined for the physical device,
+    implementations must obtain a Khronos vendor ID. To reserve a Khronos vendor
+    ID, propose a merge request against cl.xml in the master branch of the
+    OpenCL-Docs project. The merge must define a new enumerant by adding an
+    `<enum>` tag to the `cl_khronos_vendor_id` `<enums>` tag. The `<value>`
+    attribute must be a unique, unused value greater than the largest PCI vendor
+    ID (0x10000), representable by a `cl_uint`, and is the reserved vendor ID.
+    The `<name>` attribute must identify the vendor/adopter, and be of the form
+    `CL_VENDOR_ID_<vendor>`. The vendor ID will be reserved only once this merge
+    request has been accepted. Please do not try to reserve vendor IDs unless
+    you are making a good faith effort to develop a conformant OpenCL
+    implementation and require one for that purpose.
+
+5::
     A kernel that uses an image argument with the write_only or read_write
     image qualifier may result in additional read_only images resources being
     created internally by an implementation.
@@ -948,16 +963,10 @@ device except for the following queries:
     Enqueuing a kernel that requires more images than the implementation can
     support will result in a {CL_OUT_OF_RESOURCES} error being returned.
 
-5::
+6::
     NOTE: {CL_DEVICE_MAX_WRITE_IMAGE_ARGS} is only there for backward
     compatibility.
     {CL_DEVICE_MAX_READ_WRITE_IMAGE_ARGS} should be used instead.
-
-6::
-    The optional rounding modes should be included as a device capability
-    only if it is supported natively.
-    All explicit conversion functions with specific rounding modes must
-    still operate correctly.
 
 7::
     The optional rounding modes should be included as a device capability
@@ -966,10 +975,16 @@ device except for the following queries:
     still operate correctly.
 
 8::
+    The optional rounding modes should be included as a device capability
+    only if it is supported natively.
+    All explicit conversion functions with specific rounding modes must
+    still operate correctly.
+
+9::
     {CL_DEVICE_QUEUE_PROPERTIES} is deprecated and replaced by
     {CL_DEVICE_QUEUE_ON_HOST_PROPERTIES}.
 
-9::
+10::
     The platform profile returns the profile that is implemented by the
     OpenCL framework.
     If the platform profile returned is FULL_PROFILE, the OpenCL framework

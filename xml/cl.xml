@@ -963,6 +963,10 @@ server's OpenCL/api-docs repository.
             <enum value="0x1"           name="CL_AVC_ME_INTERLACED_SCAN_BOTTOM_FIELD_INTEL"           />
     </enums>
 
+    <enums name="cl_khronos_vendor_id" vendor="Khronos">
+        <enum value="0x10004"       name="CL_VENDOR_ID_CODEPLAY"/>
+    </enums>
+
     <enums start="0x0900" end="0x09FF" name="cl_platform_info" vendor="Khronos">
         <enum value="0x0900"        name="CL_PLATFORM_PROFILE"/>
         <enum value="0x0901"        name="CL_PLATFORM_VERSION"/>
